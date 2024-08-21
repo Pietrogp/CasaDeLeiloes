@@ -1,23 +1,11 @@
 package Leiloes;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Adm
- */
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-
-
 
 public class ProdutosDAO {
     
@@ -50,7 +38,35 @@ public class ProdutosDAO {
             }
         }
     }
+
+    public void venderProduto(int produtoId) {
+    String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
     
+    try {
+        conn = new conectaDAO().connectDB();
+        prep = conn.prepareStatement(sql);
+        prep.setInt(1, produtoId);
+        
+        int rowsAffected = prep.executeUpdate();
+        if (rowsAffected > 0) {
+            JOptionPane.showMessageDialog(null, "Produto vendido com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Produto não encontrado!");
+        }
+        
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Erro ao vender produto: " + e.getMessage());
+    } finally {
+        try {
+            if (prep != null) prep.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao fechar conexão: " + e.getMessage());
+        }
+    }
+}
+
+
     public ArrayList<ProdutosDTO> listarProdutos() {
         String sql = "SELECT * FROM produtos";
         
